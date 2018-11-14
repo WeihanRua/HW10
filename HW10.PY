@@ -1,4 +1,5 @@
 import os
+import sqlite3
 from prettytable import PrettyTable
 from collections import defaultdict
 
@@ -166,9 +167,13 @@ class Repository:
     def print_pretty_table_inst(self):
 
         pt = PrettyTable(field_names=['CWID', 'Name', 'Department', 'Course', 'Number of Students'])
-        for cwid in self.instructors:
-            for course in self.instructors[cwid].pretty_table():
-                pt.add_row(course)
+        DB_File = 'C:\\Users\\54783\\Desktop\\810\\HW P11'
+        db = sqlite3.connect(DB_File)
+        for row in db.execute("""select cwid, name, dept, course, count(Student_CWID) as student_num from HW11_instructors join
+                                 HW11_grades on HW11_instructors.cwid = hw11_grades.Instructor_CWID group by course"""):
+            
+            pt.add_row(row)
+
         print(pt)
 
     def print_pretty_table_major(self):
